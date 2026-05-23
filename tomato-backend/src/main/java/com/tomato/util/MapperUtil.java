@@ -100,4 +100,36 @@ public final class MapperUtil {
                 .lineTotal(lineTotal)
                 .build();
     }
+
+    public static OrderDTO toOrderDTO(Order order) {
+        List<OrderItemDTO> items = order.getItems().stream()
+                .map(MapperUtil::toOrderItemDTO)
+                .toList();
+
+        return OrderDTO.builder()
+                .id(order.getId())
+                .restaurantId(order.getRestaurant().getId())
+                .restaurantName(order.getRestaurant().getName())
+                .status(order.getStatus())
+                .statusVersion(order.getStatusVersion())
+                .total(order.getTotal())
+                .deliveryAddress(order.getDeliveryAddress())
+                .createdAt(order.getCreatedAt())
+                .updatedAt(order.getUpdatedAt())
+                .items(items)
+                .build();
+    }
+
+    public static OrderItemDTO toOrderItemDTO(OrderItem item) {
+        BigDecimal lineTotal = item.getPrice()
+                .multiply(BigDecimal.valueOf(item.getQuantity()));
+        return OrderItemDTO.builder()
+                .id(item.getId())
+                .menuItemId(item.getMenuItem().getId())
+                .name(item.getMenuItem().getName())
+                .quantity(item.getQuantity())
+                .price(item.getPrice())
+                .lineTotal(lineTotal)
+                .build();
+    }
 }
