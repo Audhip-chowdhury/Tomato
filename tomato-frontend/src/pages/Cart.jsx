@@ -1,42 +1,14 @@
-import { useEffect, useState } from 'react'
-import { Link, useNavigate } from 'react-router-dom'
-import api from '../api/axios'
+import { useEffect } from 'react'
+import { Link } from 'react-router-dom'
 import useCartStore from '../store/cartStore'
 import LoadingSpinner from '../components/LoadingSpinner'
 
 export default function Cart() {
-  const navigate = useNavigate()
   const { items, totalPrice, loading, fetchCart, updateItem, removeItem, clearCart } = useCartStore()
-  const [deliveryAddress, setDeliveryAddress] = useState('')
-  const [placingOrder, setPlacingOrder] = useState(false)
-  const [error, setError] = useState('')
 
   useEffect(() => {
     fetchCart()
   }, [fetchCart])
-
-  const handleCheckout = async () => {
-    if (!deliveryAddress.trim()) {
-      setError('Please enter a delivery address.')
-      return
-    }
-
-    try {
-      setPlacingOrder(true)
-      setError('')
-      const response = await api.post('/api/orders', {
-        deliveryAddress: deliveryAddress.trim(),
-      })
-
-      const order = response.data.data
-      await fetchCart()
-      navigate(`/orders/${order.id}/track`)
-    } catch (err) {
-      setError(err.response?.data?.message || 'Unable to place order. Please try again.')
-    } finally {
-      setPlacingOrder(false)
-    }
-  }
 
   if (loading) return <LoadingSpinner />
 
@@ -100,24 +72,15 @@ export default function Cart() {
               <span className="text-lg font-medium">Subtotal</span>
               <span className="text-2xl font-bold">₹{Number(totalPrice).toFixed(0)}</span>
             </div>
-            <div className="mb-3">
-              <label className="block text-sm font-medium text-text-dark mb-1">Delivery Address</label>
-              <textarea
-                value={deliveryAddress}
-                onChange={(e) => setDeliveryAddress(e.target.value)}
-                rows={3}
-                className="input-field resize-none"
-                placeholder="Enter complete delivery address"
-              />
-            </div>
-            {error && <p className="text-sm text-red-600 mb-3">{error}</p>}
             <button
-              onClick={handleCheckout}
-              disabled={placingOrder}
-              className="btn-primary w-full py-3 disabled:opacity-70"
+              disabled
+              title="Coming soon"
+              className="btn-primary w-full py-3 opacity-50 cursor-not-allowed"
             >
-              {placingOrder ? 'Placing order...' : 'Proceed to Checkout'}
+              Proceed to Checkout
             </button>
+            {/* TODO: ISSUE-007 - Checkout flow / Order placement API */}
+            <p className="text-center text-text-muted text-sm mt-2">Checkout coming soon</p>
             <button
               onClick={clearCart}
               className="w-full mt-3 text-red-500 text-sm hover:underline"
