@@ -7,7 +7,6 @@ import Home from './pages/Home'
 import Restaurants from './pages/Restaurants'
 import RestaurantDetail from './pages/RestaurantDetail'
 import Cart from './pages/Cart'
-import OrderTracking from './pages/OrderTracking'
 import Login from './pages/Login'
 import Register from './pages/Register'
 import useAuthStore from './store/authStore'
@@ -36,14 +35,6 @@ export default function App() {
             element={
               <ProtectedRoute>
                 <Cart />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/orders/:orderId/track"
-            element={
-              <ProtectedRoute>
-                <OrderTracking />
               </ProtectedRoute>
             }
           />
